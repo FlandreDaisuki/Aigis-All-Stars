@@ -17,7 +17,7 @@
       </md-button>
     </md-toolbar>
     <section>
-      <div v-for="group in allstars" :key="group[0]">
+      <div v-for="group in allStars" :key="group[0]">
         <h2>{{ group[0] }}</h2>
 
         <ul v-if="typeof(group[1][0]) === 'number'" class="icon-list">
@@ -46,6 +46,7 @@
       </div>
     </section>
     <footer>
+      <p>Last Update: {{ lastUpdateTime }}</p>
       <p>
         All data are from
         <a href="http://usashoya.web.fc2.com/aigis/checklist/aigis_checklist.html">[非公式]千年戦争アイギス - ユニット所持チェッカー</a>
@@ -83,7 +84,7 @@
 </template>
 
 <script>
-import allstars from '../all-stars.json';
+import { lastUpdateTimestamp, allStars } from '../all-stars.json';
 import { encode, decode } from './utils';
 
 import Icon from './icon.vue';
@@ -94,7 +95,8 @@ export default {
   components: { Icon },
   data() {
     return {
-      allstars,
+      allStars,
+      lastUpdateTimestamp,
       owned: new Set(),
       promptActive: false,
       exportSuccessfulActive: false,
@@ -105,7 +107,7 @@ export default {
   },
   computed: {
     totalCount() {
-      return this.allstars.flat(Infinity).filter(Number).length;
+      return this.allStars.flat(Infinity).filter(Number).length;
     },
     ownedCount() {
       return this.owned.size;
@@ -115,6 +117,9 @@ export default {
     },
     encodedOwned() {
       return encode(this.owned);
+    },
+    lastUpdateTime() {
+      return new Date(this.lastUpdateTimestamp).toLocaleString(this.$i18n.locale);
     },
   },
   mounted() {

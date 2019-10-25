@@ -44,5 +44,9 @@ fetch(url).then(async(resp) => {
     root.push([group[0], subgroups]);
   }
 
-  fs.writeFileSync(EXPORT_NAME, JSON.stringify(root, null, 2));
+  const result = {
+    lastUpdateTimestamp: Date.now(),
+    allStars: root,
+  };
+  fs.writeFileSync(EXPORT_NAME, JSON.stringify(result, null, 2));
 });
