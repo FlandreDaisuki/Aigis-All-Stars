@@ -7,13 +7,13 @@
         </h3>
       </div>
       <md-button class="md-raised md-primary" :disabled="!encodedOwned.length" @click="exportData">
-        {{ t('export') }}
+        {{ $t('export') }}
       </md-button>
       <md-button class="md-raised md-primary" @click="promptActive = true">
-        {{ t('import') }}
+        {{ $t('import') }}
       </md-button>
       <md-button class="md-raised md-accent" @click="cleanup">
-        {{ t('clear') }}
+        {{ $t('clear') }}
       </md-button>
     </md-toolbar>
     <section>
@@ -61,11 +61,11 @@
     /> -->
 
     <md-dialog :md-active.sync="exportSuccessfulActive">
-      <md-dialog-title>{{ t('copied') }}</md-dialog-title>
+      <md-dialog-title>{{ $t('copied') }}</md-dialog-title>
     </md-dialog>
 
     <md-dialog :md-active.sync="exportFailedActive">
-      <md-dialog-title>{{ t('copy-following-encoded-string') }}</md-dialog-title>
+      <md-dialog-title>{{ $t('copy-following-encoded-string') }}</md-dialog-title>
       <md-field>
         <md-input v-model="copyTextArea" readonly />
       </md-field>
