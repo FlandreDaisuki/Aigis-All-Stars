@@ -1,0 +1,24 @@
+{
+    "[python]": {
+        "editor.formatOnSave": true,
+    },
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": ["--style", "{based_on_style: chromium, indent_width: 2}"],
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        { "language": "vue", "autoFix": true },
+        // { "language": "html", "autoFix": true },
+        { "language": "javascript", "autoFix": true }
+    ],
+    "cSpell.words": [
+        "asarray",
+        "curr",
+        "destpath",
+        "functools",
+        "hsplit",
+        "hstack",
+        "vstack"
+    ],
+}

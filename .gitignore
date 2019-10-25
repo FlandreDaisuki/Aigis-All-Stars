@@ -1,0 +1,13 @@
+# npm
+node_modules
+
+# parcel-bundler
+.cache
+
+# assets
+icons
+icon_groups
+all-stars.json
+
+# project
+dist
