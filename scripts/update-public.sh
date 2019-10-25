@@ -1,5 +1,7 @@
 #!/bin/bash
 
+git checkout master
+yarn build
 git checkout gh-pages
 rm src.* g*.png index.html
 cp dist/* ./
