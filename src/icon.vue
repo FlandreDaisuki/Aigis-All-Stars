@@ -3,7 +3,7 @@
      :style="style"
      :data-id="id"
      :class="className"
-     @mouseup="toggleOwned"
+     @click.left.passive="toggleOwned"
   ></a>
 </template>
 
