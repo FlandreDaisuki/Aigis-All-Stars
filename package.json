@@ -11,6 +11,7 @@
     "dev": "parcel src/index.html",
     "build:all": "yarn pre-process && yarn build",
     "build": "rm -rf dist/ && parcel build src/index.html --no-source-maps --public-url '.'",
+    "postbuild": "bash scripts/update-public.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
