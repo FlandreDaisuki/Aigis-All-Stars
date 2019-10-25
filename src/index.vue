@@ -6,13 +6,13 @@
           所有率: <span>{{ ownedRate }}</span>％（{{ ownedCount }}/{{ totalCount }}）
         </h3>
       </div>
-      <md-button class="md-raised md-primary" :disabled="!encodedOwned.length" @click="exportData">
+      <md-button class="export md-raised md-primary" :disabled="!encodedOwned.length" @click="exportData">
         {{ $t('export') }}
       </md-button>
-      <md-button class="md-raised md-primary" @click="promptActive = true">
+      <md-button class="import md-raised md-primary" @click="promptActive = true">
         {{ $t('import') }}
       </md-button>
-      <md-button class="md-raised md-accent" @click="cleanup">
+      <md-button class="clear md-raised md-accent" @click="cleanup">
         {{ $t('clear') }}
       </md-button>
     </md-toolbar>
@@ -181,5 +181,8 @@ export default {
 .icon-list-item {
   list-style: none;
   display: inline-block;
+}
+.clear {
+  margin-left: auto;
 }
 </style>
