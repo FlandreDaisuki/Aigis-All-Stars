@@ -1,5 +1,6 @@
 #!/bin/bash
 
+git stash
 git checkout master
 yarn build
 git checkout gh-pages
@@ -9,3 +10,4 @@ git add .
 git commit -m 'Update public page'
 git push origin gh-pages
 git checkout master
+git stash pop
