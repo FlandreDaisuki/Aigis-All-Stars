@@ -19,7 +19,7 @@ fetch(url).then(async(resp) => {
   const groups = $('.group').toArray().map((g) => [
     $(g).children().first().text(),
     $(g).find('span, input').toArray()
-      .map((e) => $(e).val() ? $(e).val() : $(e).text())
+      .map((e) => $(e).val() ? $(e).val() : $(e).text().trim())
       .map((e) => Number(e) ? Number(e) - 1000 : e)
       .filter(Boolean),
   ]);
@@ -28,6 +28,7 @@ fetch(url).then(async(resp) => {
   for (const group of groups) {
     const subgroups = [];
     let current = subgroups;
+    console.log('group', group);
     for (const e of group[1]) {
       if (typeof e === 'number') {
         current.push(e);
@@ -44,9 +45,16 @@ fetch(url).then(async(resp) => {
     root.push([group[0], subgroups]);
   }
 
+  const ordNameEntries = $('.monsImg').toArray().map((img) => {
+    const data = $(img).data();
+    const no = data.original.replace(/.*\/u(\d+)_0.*/, '$1');
+    return [no, data.tipso];
+  });
+
   const result = {
     lastUpdateTimestamp: Date.now(),
     allStars: root,
+    allStarsNameMap: Object.fromEntries(ordNameEntries),
   };
   fs.writeFileSync(EXPORT_NAME, JSON.stringify(result, null, 2));
 });

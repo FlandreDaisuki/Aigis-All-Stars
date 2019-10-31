@@ -3,6 +3,7 @@
      :style="style"
      :data-id="id"
      :class="className"
+     :title="title"
      @click.left.passive="toggleOwned"
   ></a>
 </template>
@@ -10,6 +11,7 @@
 <script>
 import icon_groups from '../icon_groups/*.png';
 import { divmod } from './utils';
+import { allStarsNameMap } from '../all-stars.json';
 
 export default {
   props: {
@@ -33,6 +35,9 @@ export default {
     },
     className() {
       return { 'owned': this.ownedSet.has(this.id) };
+    },
+    title() {
+      return allStarsNameMap[this.id];
     },
   },
   methods: {
