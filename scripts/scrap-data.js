@@ -28,7 +28,6 @@ fetch(url).then(async(resp) => {
   for (const group of groups) {
     const subgroups = [];
     let current = subgroups;
-    console.log('group', group);
     for (const e of group[1]) {
       if (typeof e === 'number') {
         current.push(e);
