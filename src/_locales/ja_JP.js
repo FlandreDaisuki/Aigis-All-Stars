@@ -8,4 +8,5 @@ export default {
   'export': '導出',
   'clear': 'クリア',
   'share-mode-title': 'シェアモードでは変更は保存されません',
+  'personal-mode-title': 'パーソナルモードでは変更は保存されます',
 };

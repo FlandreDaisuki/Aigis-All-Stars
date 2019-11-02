@@ -5,7 +5,8 @@
         <h3 class="md-title">
           所有率: <span>{{ ownedRate }}</span>％（{{ ownedCount }}/{{ totalCount }}）
         </h3>
-        <img v-if="shareMode" class="share-mode-indicator" src="./share-alt-solid.svg" :title="$t('share-mode-title')" />
+        <img v-if="shareMode" class="mode-indicator" src="./share-alt-solid.svg" :title="$t('share-mode-title')" :alt="$t('share-mode-title')" />
+        <img v-if="!shareMode" class="mode-indicator" src="./user-solid.svg" :title="$t('personal-mode-title')" :alt="$t('personal-mode-title')" />
       </div>
       <md-button class="export md-raised md-primary" :disabled="!encodedOwned.length" @click="exportData">
         {{ $t('export') }}
@@ -209,7 +210,7 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
 .clear {
   margin-left: auto;
 }
-.share-mode-indicator {
+.mode-indicator {
   height: 24px;
   margin-left: auto;
 }
