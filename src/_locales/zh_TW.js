@@ -7,4 +7,5 @@ export default {
   'import': '匯入',
   'export': '匯出',
   'clear': '清空',
+  'share-mode-title': '分享模式下不會儲存任何變更',
 };

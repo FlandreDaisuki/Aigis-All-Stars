@@ -23,6 +23,13 @@ Vue.use(MdToolbar);
 Vue.use(MdDialogAlert);
 Vue.use(MdDialogPrompt);
 
+Vue.directive('external-link', (el) => {
+  if (el instanceof HTMLAnchorElement) {
+    el.target = '_blank';
+    el.rel = 'noopener noreferrer';
+  }
+});
+
 new Vue({
   i18n,
   mounted() {

@@ -7,4 +7,5 @@ export default {
   'import': '導入',
   'export': '導出',
   'clear': 'クリア',
+  'share-mode-title': 'シェアモードでは変更は保存されません',
 };

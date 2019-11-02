@@ -5,12 +5,16 @@
         <h3 class="md-title">
           所有率: <span>{{ ownedRate }}</span>％（{{ ownedCount }}/{{ totalCount }}）
         </h3>
+        <img v-if="shareMode" class="share-mode-indicator" src="./share-alt-solid.svg" :title="$t('share-mode-title')" />
       </div>
       <md-button class="export md-raised md-primary" :disabled="!encodedOwned.length" @click="exportData">
         {{ $t('export') }}
       </md-button>
       <md-button class="import md-raised md-primary" @click="promptActive = true">
         {{ $t('import') }}
+      </md-button>
+      <md-button v-external-link class="social-twitter md-raised md-primary" :href="twitterLink">
+        <img src="./twitter-brands.svg" style="height: 24px;" />
       </md-button>
       <md-button class="clear md-raised md-accent" @click="cleanup">
         {{ $t('clear') }}
@@ -103,6 +107,7 @@ export default {
       exportFailedActive: false,
       importValue: '',
       copyTextArea: '',
+      shareMode: false,
     };
   },
   computed: {
@@ -121,10 +126,22 @@ export default {
     lastUpdateTime() {
       return new Date(this.lastUpdateTimestamp).toLocaleString(this.$i18n.locale);
     },
+    twitterLink() {
+      const text = `Aigis All Stars ※ユニット所有率：${this.ownedRate}％（所有数 : ${this.ownedCount}/${this.totalCount}）
+https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
+#アイギス所持チェッカー #千年戦争アイギス`;
+      return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    },
   },
   mounted() {
-    this.loadFromLocal();
-    this.saveToLocal();
+    if (location.search) {
+      const encodedShared = new URLSearchParams(location.search).get('s');
+      this.owned = new Set(decode(encodedShared));
+      this.shareMode = true;
+    } else {
+      this.loadFromLocal();
+      this.saveToLocal();
+    }
   },
   methods: {
     addId(id) {
@@ -138,7 +155,9 @@ export default {
       this.saveToLocal();
     },
     saveToLocal() {
-      localStorage.setItem(STORAGE_KEY, this.encodedOwned);
+      if (!this.shareMode) {
+        localStorage.setItem(STORAGE_KEY, this.encodedOwned);
+      }
     },
     loadFromLocal() {
       const stored = localStorage.getItem(STORAGE_KEY) || '';
@@ -188,6 +207,10 @@ export default {
   display: inline-block;
 }
 .clear {
+  margin-left: auto;
+}
+.share-mode-indicator {
+  height: 24px;
   margin-left: auto;
 }
 </style>
