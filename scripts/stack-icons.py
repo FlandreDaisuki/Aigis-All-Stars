@@ -39,8 +39,8 @@ for group in group_sorted_icon_names:
 
     if icon_name in group:
       img = Image.open(f'{ICON_FOLDER}/{icon_name}')
-      if img.mode == 'RGB':
-        img.putalpha(255)
+      if img.mode != 'RGBA':
+        img = img.convert('RGBA')
       icon_canvas = np.asarray(img.resize((IMG_WIDTH, IMG_HEIGHT)))
 
     if canvas is not None:

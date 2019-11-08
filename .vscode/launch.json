@@ -8,20 +8,20 @@
             "name": "download-icons.py",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/download-icons.py",
+            "program": "${workspaceFolder}/scripts/download-icons.py",
             "console": "integratedTerminal"
         },
         {
             "type": "node",
             "request": "launch",
             "name": "scrap-data.js",
-            "program": "${workspaceFolder}/scrap-data.js"
+            "program": "${workspaceFolder}/scripts/scrap-data.js"
         },
         {
             "name": "stack-icons.py",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/stack-icons.py",
+            "program": "${workspaceFolder}/scripts/stack-icons.py",
             "console": "integratedTerminal"
         }
     ]
