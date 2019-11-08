@@ -46,7 +46,7 @@ fetch(url).then(async(resp) => {
 
   const ordNameEntries = $('.monsImg').toArray().map((img) => {
     const data = $(img).data();
-    const no = data.original.replace(/.*\/u(\d+)_0.*/, '$1');
+    const no = Number($(img).prev().attr('id')) - 1000;
     return [no, data.tipso];
   });
 
