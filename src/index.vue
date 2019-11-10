@@ -1,23 +1,40 @@
 <template>
   <div id="app">
-    <md-toolbar class="title-bar md-medium" md-elevation="1">
+    <md-toolbar class="title-bar md-large" md-elevation="1">
       <div class="md-toolbar-row">
         <h3 class="md-title">
           所有率: <span>{{ ownedRate }}</span>％（{{ ownedCount }}/{{ totalCount }}）
         </h3>
-        <img v-if="shareMode" class="mode-indicator" src="./share-alt-solid.svg" :title="$t('share-mode-title')" :alt="$t('share-mode-title')" />
-        <img v-if="!shareMode" class="mode-indicator" src="./user-solid.svg" :title="$t('personal-mode-title')" :alt="$t('personal-mode-title')" />
+
+        <div class="mode-indicator">
+          <md-button class="md-icon-button" :disabled="!shareMode" @click.left.passive="switchMode">
+            <md-icon>
+              person
+            </md-icon>
+            <md-tooltip md-direction="bottom">
+              {{ $t('personal-mode-title') }}
+            </md-tooltip>
+          </md-button>
+          <md-button class="md-icon-button" :disabled="shareMode" @click.left.passive="switchMode">
+            <md-icon>
+              share
+            </md-icon>
+            <md-tooltip md-direction="bottom">
+              {{ $t('share-mode-title') }}
+            </md-tooltip>
+          </md-button>
+        </div>
       </div>
-      <md-button class="export md-raised md-primary" :disabled="!encodedOwned.length" @click="exportData">
+      <md-button class="export md-raised md-primary" :disabled="!encodedOwned.length" @click.left.passive="exportData">
         {{ $t('export') }}
       </md-button>
-      <md-button class="import md-raised md-primary" @click="promptActive = true">
+      <md-button class="import md-raised md-primary" @click.left.passive="promptActive = true">
         {{ $t('import') }}
       </md-button>
       <md-button v-external-link class="social-twitter md-raised md-primary" :href="twitterLink">
         <img src="./twitter-brands.svg" style="height: 24px;" />
       </md-button>
-      <md-button class="clear md-raised md-accent" @click="cleanup">
+      <md-button class="clear md-raised md-accent" @click.left.passive="clickCleanup">
         {{ $t('clear') }}
       </md-button>
     </md-toolbar>
@@ -25,25 +42,25 @@
       <div v-for="group in allStars" :key="group[0]">
         <h2>{{ group[0] }}</h2>
 
-        <ul v-if="typeof(group[1][0]) === 'number'" class="icon-list">
-          <li v-for="groupId in group[1]" :key="groupId" class="icon-list-item">
-            <Icon :id="groupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
+        <ul v-if="typeof(group[1][0]) === 'number'" class="star-list">
+          <li v-for="groupId in group[1]" :key="groupId" class="star-list-item">
+            <StarAvatar :id="groupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
           </li>
         </ul>
         <div v-for="(subgroup, index) in group[1]" v-else :key="index">
           <h3>{{ subgroup[0] }}</h3>
 
-          <ul v-if="typeof(subgroup[1]) === 'number'" class="icon-list">
-            <li v-for="subgroupId in subgroup.slice(1)" :key="subgroupId" class="icon-list-item">
-              <Icon :id="subgroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
+          <ul v-if="typeof(subgroup[1]) === 'number'" class="star-list">
+            <li v-for="subgroupId in subgroup.slice(1)" :key="subgroupId" class="star-list-item">
+              <StarAvatar :id="subgroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
             </li>
           </ul>
           <div v-for="(subsubgroup, subindex) in subgroup.slice(1)" v-else :key="subindex">
             <h4>{{ subsubgroup[0] }}</h4>
 
-            <ul class="icon-list">
-              <li v-for="subsubgroupId in subsubgroup.slice(1)" :key="subsubgroupId" class="icon-list-item">
-                <Icon :id="subsubgroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
+            <ul class="star-list">
+              <li v-for="subsubgroupId in subsubgroup.slice(1)" :key="subsubgroupId" class="star-list-item">
+                <StarAvatar :id="subsubgroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
               </li>
             </ul>
           </div>
@@ -60,31 +77,45 @@
       <p>License is <a href="https://opensource.org/licenses/MIT">MIT</a></p>
     </footer>
 
-    <!-- <md-dialog-alert
-      :md-active.sync="exportSuccessfulActive"
-      md-content="已複製到剪貼簿"
-      md-confirm-text="好！"
-    /> -->
+    <!-- template hack works! -->
 
-    <md-dialog :md-active.sync="exportSuccessfulActive">
-      <md-dialog-title>{{ $t('copied') }}</md-dialog-title>
-    </md-dialog>
+    <template>
+      <md-dialog-alert
+        :md-active.sync="exportSuccessfulActive"
+        :md-title="$t('copied')"
+        :md-confirm-text="$t('confirm-text')"
+      />
+    </template>
 
-    <md-dialog :md-active.sync="exportFailedActive">
-      <md-dialog-title>{{ $t('copy-following-encoded-string') }}</md-dialog-title>
-      <md-field>
-        <md-input v-model="copyTextArea" readonly />
-      </md-field>
-    </md-dialog>
+    <template>
+      <md-dialog :md-active.sync="exportFailedActive">
+        <md-dialog-title>{{ $t('copy-following-encoded-string') }}</md-dialog-title>
+        <md-field>
+          <md-input v-model="copyTextArea" readonly />
+        </md-field>
+      </md-dialog>
+    </template>
 
-    <md-dialog-prompt
-      v-model="importValue"
-      :md-active.sync="promptActive"
-      :md-input-placeholder="$t('input-encoded-string')"
-      :md-confirm-text="$t('confirm-text')"
-      :md-cancel-text="$t('cancel-text')"
-      @md-confirm="importData"
-    />
+    <template>
+      <md-dialog-confirm
+        :md-active.sync="clearInPersonalModeActive"
+        :md-title="$t('clear-in-personal-mode-title')"
+        :md-confirm-text="$t('confirm-text')"
+        :md-cancel-text="$t('cancel-text')"
+        @md-confirm="cleanup"
+      />
+    </template>
+
+    <template>
+      <md-dialog-prompt
+        v-model="importValue"
+        :md-active.sync="promptActive"
+        :md-input-placeholder="$t('input-encoded-string')"
+        :md-confirm-text="$t('confirm-text')"
+        :md-cancel-text="$t('cancel-text')"
+        @md-confirm="importData"
+      />
+    </template>
   </div>
 </template>
 
@@ -92,12 +123,14 @@
 import { allStars } from '../all-stars.json';
 import { encode, decode, allStarsConst } from './utils';
 
-import Icon from './icon.vue';
+import StarAvatar from './StarAvatar.vue';
 
 const STORAGE_KEY = 'owned';
 
 export default {
-  components: { Icon },
+  components: {
+    StarAvatar,
+  },
   data() {
     const { totalCount, lastUpdateTimestamp } = allStarsConst;
 
@@ -109,6 +142,7 @@ export default {
       promptActive: false,
       exportSuccessfulActive: false,
       exportFailedActive: false,
+      clearInPersonalModeActive: false,
       importValue: '',
       copyTextArea: '',
       shareMode: false,
@@ -159,6 +193,7 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
       if (!this.shareMode) {
         localStorage.setItem(STORAGE_KEY, this.encodedOwned);
       }
+      this.updateURL();
     },
     loadFromLocal() {
       const stored = localStorage.getItem(STORAGE_KEY) || '';
@@ -180,9 +215,30 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
       this.importValue = '';
       this.saveToLocal();
     },
+    clickCleanup() {
+      if (this.shareMode) {
+        this.cleanup();
+      } else {
+        this.clearInPersonalModeActive = true;
+      }
+    },
     cleanup() {
       this.owned = new Set();
       this.saveToLocal();
+    },
+    updateURL() {
+      if (this.shareMode) {
+        history.replaceState(null, document.title, '?s=' + this.encodedOwned);
+      } else {
+        history.replaceState(null, document.title, '/');
+      }
+    },
+    switchMode() {
+      if (this.shareMode) {
+        this.loadFromLocal();
+      }
+      this.shareMode = !this.shareMode;
+      this.updateURL();
     },
   },
 };
@@ -200,10 +256,10 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
   background: white;
   z-index: 1;
 }
-.icon-list {
+.star-list {
   padding: 0;
 }
-.icon-list-item {
+.star-list-item {
   list-style: none;
   display: inline-block;
 }
@@ -213,5 +269,12 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
 .mode-indicator {
   height: 24px;
   margin-left: auto;
+}
+.mode-indicator .md-icon {
+  font-weight: 900;
+  font-size: 30px;
+}
+.md-button.md-theme-default[disabled] .md-icon-font {
+  color: #74F;
 }
 </style>
