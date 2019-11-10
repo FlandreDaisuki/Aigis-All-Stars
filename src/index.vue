@@ -89,8 +89,8 @@
 </template>
 
 <script>
-import { lastUpdateTimestamp, allStars } from '../all-stars.json';
-import { encode, decode } from './utils';
+import { allStars } from '../all-stars.json';
+import { encode, decode, allStarsConst } from './utils';
 
 import Icon from './icon.vue';
 
@@ -99,9 +99,12 @@ const STORAGE_KEY = 'owned';
 export default {
   components: { Icon },
   data() {
+    const { totalCount, lastUpdateTimestamp } = allStarsConst;
+
     return {
       allStars,
       lastUpdateTimestamp,
+      totalCount,
       owned: new Set(),
       promptActive: false,
       exportSuccessfulActive: false,
@@ -112,9 +115,6 @@ export default {
     };
   },
   computed: {
-    totalCount() {
-      return this.allStars.flat(Infinity).filter(Number).length;
-    },
     ownedCount() {
       return this.owned.size;
     },
