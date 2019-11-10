@@ -230,7 +230,7 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
       if (this.shareMode) {
         history.replaceState(null, document.title, '?s=' + this.encodedOwned);
       } else {
-        history.replaceState(null, document.title, '/');
+        history.replaceState(null, document.title, location.pathname);
       }
     },
     switchMode() {
