@@ -28,7 +28,7 @@
       <md-button class="export md-raised md-primary" :disabled="!encodedOwned.length" @click.left.passive="exportData">
         {{ $t('export') }}
       </md-button>
-      <md-button class="import md-raised md-primary" @click.left.passive="promptActive = true">
+      <md-button class="import md-raised md-primary" @click.left.passive="openImportDialog">
         {{ $t('import') }}
       </md-button>
       <md-button v-external-link class="social-twitter md-raised md-primary" :href="twitterLink">
@@ -107,14 +107,29 @@
     </template>
 
     <template>
-      <md-dialog-prompt
-        v-model="importValue"
-        :md-active.sync="promptActive"
-        :md-input-placeholder="$t('input-encoded-string')"
-        :md-confirm-text="$t('confirm-text')"
-        :md-cancel-text="$t('cancel-text')"
-        @md-confirm="importData"
-      />
+      <md-dialog
+        :md-active.sync="isImportDialogOpened"
+      >
+        <md-dialog-title>{{ $t('import') }}</md-dialog-title>
+        <md-dialog-content>
+          <md-field md-clearable>
+            <span class="md-helper-text">{{ $t('input-encoded-string') }}</span>
+            <md-input v-model="importEncodedValue" placeholder="1!xxxxxxxxx…" :disabled="!!importURLValue" />
+          </md-field>
+          <md-field md-clearable>
+            <span class="md-helper-text">{{ $t('input-importable-url') }}</span>
+            <md-input v-model="importURLValue" placeholder="http://usashoya.web.fc2.com…" :disabled="!!importEncodedValue" />
+          </md-field>
+        </md-dialog-content>
+        <md-dialog-actions>
+          <md-button class="md-primary" @click="isImportDialogOpened = false">
+            {{ $t('cancel-text') }}
+          </md-button>
+          <md-button class="md-primary" @click="importData">
+            {{ $t('confirm-text') }}
+          </md-button>
+        </md-dialog-actions>
+      </md-dialog>
     </template>
   </div>
 </template>
@@ -139,13 +154,14 @@ export default {
       lastUpdateTimestamp,
       totalCount,
       owned: new Set(),
-      promptActive: false,
+      isImportDialogOpened: false,
       exportSuccessfulActive: false,
       exportFailedActive: false,
       clearInPersonalModeActive: false,
-      importValue: '',
       copyTextArea: '',
       shareMode: false,
+      importEncodedValue: '',
+      importURLValue: '',
     };
   },
   computed: {
@@ -211,8 +227,20 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
       this.$copyText(this.encodedOwned).then(resolve, reject);
     },
     importData() {
-      this.owned = new Set(decode(this.importValue));
-      this.importValue = '';
+      this.isImportDialogOpened = false;
+      if (this.importEncodedValue) {
+        this.owned = new Set(decode(this.importEncodedValue));
+      } else {
+        const range = (start, end) => Array.from({ length: Math.abs(start - end) + 1 }, (_, i) => start + i);
+        const ids = new URL(this.importURLValue).search
+          .slice(1, -1)
+          .split(/[,]/g)
+          .flatMap((n) => n.includes('-') ? range(...n.split('-').map(Number)) : Number(n))
+          .filter(Boolean)
+          .map((n) => n - 1000);
+
+        this.owned = new Set(ids);
+      }
       this.saveToLocal();
     },
     clickCleanup() {
@@ -239,6 +267,10 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
       }
       this.shareMode = !this.shareMode;
       this.updateURL();
+    },
+    openImportDialog() {
+      this.isImportDialogOpened = true;
+      this.importEncodedValue = this.importURLValue = '';
     },
   },
 };
