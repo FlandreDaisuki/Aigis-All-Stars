@@ -109,7 +109,7 @@ export function decode1(encoded) {
     for (const starId of invOwnedList) {
       ownedSet.delete(starId);
     }
-    return [...ownedSet];
+    return [...ownedSet].filter((n) => n <= 854);
   }
 }
 
