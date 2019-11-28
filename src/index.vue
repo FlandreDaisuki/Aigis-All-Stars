@@ -114,7 +114,7 @@
         <md-dialog-content>
           <md-field md-clearable>
             <span class="md-helper-text">{{ $t('input-encoded-string') }}</span>
-            <md-input v-model="importEncodedValue" placeholder="1!xxxxxxxxx…" :disabled="!!importURLValue" />
+            <md-input v-model="importEncodedValue" :placeholder="importEncodedPlaceholder" :disabled="!!importURLValue" />
           </md-field>
           <md-field md-clearable>
             <span class="md-helper-text">{{ $t('input-importable-url') }}</span>
@@ -182,6 +182,9 @@ export default {
 https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
 #アイギス所持チェッカー #千年戦争アイギス`;
       return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    },
+    importEncodedPlaceholder() {
+      return '1!xxxxx… ' + this.$t('or') + ' 2!xxxxx…';
     },
   },
   mounted() {

@@ -11,4 +11,5 @@ export default {
   'share-mode-title': 'シェアモードでは変更は保存されません',
   'personal-mode-title': 'パーソナルモードでは変更は保存されます',
   'clear-in-personal-mode-title': 'クリア後のデータは保存されます',
+  'or': 'や',
 };

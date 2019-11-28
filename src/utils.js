@@ -1,5 +1,8 @@
 import { allStars, lastUpdateTimestamp } from '../all-stars.json';
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
+import {
+  compressToEncodedURIComponent, // /^[a-zA-Z0-9+-$]+$/
+  decompressFromEncodedURIComponent,
+} from 'lz-string';
 
 export const divmod = (x, y) => [Math.floor(x / y), x % y];
 export const last = (a) => a.length ? a[a.length - 1] : null;
@@ -12,8 +15,8 @@ export const allStarsConst = {
 };
 allStarsConst.totalCount = allStarsConst.totalIds.length;
 
-export const encoders = [encode0, encode1];
-export const decoders = [decode0, decode1];
+export const encoders = [encode0, encode1, encode2];
+export const decoders = [decode0, decode1, decode2];
 
 export function getDiffList(a) {
   return a.slice(1)
@@ -40,11 +43,13 @@ export function decode(encoded) {
   if (!encoded) { return []; }
 
   if (/^[a-f\d|.]+$/ig.test(encoded)) {
+    console.log('decoder v0');
     return decoders[0](encoded);
   }
 
   if (/^(\d+)!(.*)$/.test(encoded)) {
     const [v, vEncoded] = encoded.match(/^(\d+)!(.*)$/).slice(1);
+    console.log('decoder v', v);
     return decoders[v](vEncoded);
   }
 
@@ -94,13 +99,42 @@ export function encode1(ownedSet) {
 }
 
 export function decode1(encoded) {
-  const encoded2 = decompressFromEncodedURIComponent(encoded);
-  const [prefix, encoded3] = [encoded2[0], encoded2.slice(1)];
+  const e2 = decompressFromEncodedURIComponent(encoded);
+  const [prefix, e3] = [e2[0], e2.slice(1)];
   if (prefix === '+') {
-    return decode0(encoded3);
+    return decode0(e3);
   } else {
-    const invOwnedList = decode0(encoded3);
+    const invOwnedList = decode0(e3);
     const ownedSet = new Set(allStarsConst.totalIds);
+    for (const starId of invOwnedList) {
+      ownedSet.delete(starId);
+    }
+    return [...ownedSet];
+  }
+}
+
+export function encode2(ownedSet) {
+  const prefix = ownedSet.size > (allStarsConst.totalCount / 2) ? '-' : '+';
+  const suffix = ';' + Math.max(...allStarsConst.totalIds);
+  if (prefix === '+') {
+    return '2!' + compressToEncodedURIComponent(prefix + encode0(ownedSet) + suffix);
+  } else {
+    const invOwnedSet = new Set(allStarsConst.totalIds);
+    for (const starId of ownedSet) {
+      invOwnedSet.delete(starId);
+    }
+    return '2!' + compressToEncodedURIComponent(prefix + encode0(invOwnedSet) + suffix);
+  }
+}
+
+export function decode2(encoded) {
+  const e2 = decompressFromEncodedURIComponent(encoded);
+  const [prefix, e3, suffix] = [e2[0], ...e2.slice(1).split(';')];
+  if (prefix === '+') {
+    return decode0(e3);
+  } else {
+    const invOwnedList = decode0(e3);
+    const ownedSet = new Set(allStarsConst.totalIds.filter((n) => n <= Number(suffix)));
     for (const starId of invOwnedList) {
       ownedSet.delete(starId);
     }

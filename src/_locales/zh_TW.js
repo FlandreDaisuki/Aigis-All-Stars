@@ -11,4 +11,5 @@ export default {
   'share-mode-title': '分享模式下不會儲存任何變更',
   'personal-mode-title': '個人模式下將會儲存任何變更',
   'clear-in-personal-mode-title': '此清空動作將會儲存',
+  'or': '或',
 };
