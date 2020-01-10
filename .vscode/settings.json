@@ -4,13 +4,13 @@
     },
     "python.formatting.provider": "yapf",
     "python.formatting.yapfArgs": ["--style", "{based_on_style: chromium, indent_width: 2}"],
-    "eslint.autoFixOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
     "eslint.validate": [
+        "vue",
         "javascript",
         "javascriptreact",
-        { "language": "vue", "autoFix": true },
-        // { "language": "html", "autoFix": true },
-        { "language": "javascript", "autoFix": true }
     ],
     "cSpell.words": [
         "asarray",
