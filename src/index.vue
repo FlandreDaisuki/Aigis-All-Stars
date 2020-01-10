@@ -39,28 +39,28 @@
       </md-button>
     </md-toolbar>
     <section>
-      <div v-for="group in allStars" :key="group[0]">
-        <h2>{{ group[0] }}</h2>
+      <div v-for="firstGroup in allStars" :key="JSON.stringify(firstGroup)">
+        <h2>{{ firstGroup[0] }}</h2>
 
-        <ul v-if="typeof(group[1][0]) === 'number'" class="star-list">
-          <li v-for="groupId in group[1]" :key="groupId" class="star-list-item">
-            <StarAvatar :id="groupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
+        <ul v-if="typeof(firstGroup[1]) === 'number'" class="star-list">
+          <li v-for="firstGroupId in firstGroup.slice(1)" :key="firstGroupId" class="star-list-item">
+            <StarAvatar :id="firstGroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
           </li>
         </ul>
-        <div v-for="(subgroup, index) in group[1]" v-else :key="index">
-          <h3>{{ subgroup[0] }}</h3>
 
-          <ul v-if="typeof(subgroup[1]) === 'number'" class="star-list">
-            <li v-for="subgroupId in subgroup.slice(1)" :key="subgroupId" class="star-list-item">
-              <StarAvatar :id="subgroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
+        <div v-for="secondGroup in firstGroup.slice(1)" v-else :key="JSON.stringify(secondGroup)">
+          <h3>{{ secondGroup[0] }}</h3>
+          <ul v-if="typeof(secondGroup[1]) === 'number'" class="star-list">
+            <li v-for="secondGroupId in secondGroup.slice(1)" :key="secondGroupId" class="star-list-item">
+              <StarAvatar :id="secondGroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
             </li>
           </ul>
-          <div v-for="(subsubgroup, subindex) in subgroup.slice(1)" v-else :key="subindex">
-            <h4>{{ subsubgroup[0] }}</h4>
 
+          <div v-for="thirdGroup in secondGroup.slice(1)" v-else :key="JSON.stringify(thirdGroup)">
+            <h4>{{ thirdGroup[0] }}</h4>
             <ul class="star-list">
-              <li v-for="subsubgroupId in subsubgroup.slice(1)" :key="subsubgroupId" class="star-list-item">
-                <StarAvatar :id="subsubgroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
+              <li v-for="thirdGroupId in thirdGroup.slice(1)" :key="thirdGroupId" class="star-list-item">
+                <StarAvatar :id="thirdGroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
               </li>
             </ul>
           </div>

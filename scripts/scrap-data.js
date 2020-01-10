@@ -6,8 +6,56 @@ const fs = require('fs');
 
 const EXPORT_NAME = 'all-stars.json';
 
-Array.prototype.lastItem = function() {
-  return this.length > 0 ? this[this.length - 1] : this[0];
+const transformAllStars = (flattened) => {
+  const first = flattened.flat(Infinity).reduce((arr, val) => {
+    if (typeof val === 'string') {
+      arr.push(val);
+    } else {
+      const last = arr[arr.length - 1];
+      if (Array.isArray(last)) {
+        last.push(val);
+      } else {
+        arr.push([arr.pop(), val]);
+      }
+    }
+    return arr;
+  }, []);
+  // console.log('first', first)
+
+  const second = first.reduce((arr, val) => {
+    if (typeof val === 'string' && val.startsWith('▇')) {
+      arr.push([val]);
+    } else if (Array.isArray(val) && typeof val[0] === 'string' && val[0].startsWith('▼') || val[0].startsWith('◆')) {
+      const last = arr[arr.length - 1];
+      if (Array.isArray(last)) {
+        last.push(val);
+      } else {
+        arr.push([arr.pop(), val]);
+      }
+    } else {
+      arr.push(val);
+    }
+    return arr;
+  }, []);
+    // console.log('second', second)
+
+  const third = second.reduce((arr, val) => {
+    if (typeof val === 'string') {
+      arr.push([val]);
+    } else if (Array.isArray(val) && val[0].startsWith('▇')) {
+      const last = arr[arr.length - 1];
+      if (Array.isArray(last)) {
+        last.push(val);
+      } else {
+        arr.push([arr.pop(), val]);
+      }
+    } else {
+      arr.push(val);
+    }
+    return arr;
+  }, []);
+    // console.log('third', third)
+  return third;
 };
 
 const url = 'http://usashoya.web.fc2.com/aigis/checklist/aigis_checklist.html';
@@ -24,24 +72,9 @@ fetch(url).then(async(resp) => {
       .filter(Boolean),
   ]);
 
-  const root = [];
+  const flattened = [];
   for (const group of groups) {
-    const subgroups = [];
-    let current = subgroups;
-    for (const e of group[1]) {
-      if (typeof e === 'number') {
-        current.push(e);
-      } else {
-        const curr = [e];
-        if (e.startsWith('▇ ') || e === 'N/A') {
-          subgroups.push(curr);
-        } else {
-          subgroups.lastItem().push(curr);
-        }
-        current = curr;
-      }
-    }
-    root.push([group[0], subgroups]);
+    flattened.push(group[0], ...group[1]);
   }
 
   const ordNameEntries = $('.monsImg').toArray().map((img) => {
@@ -52,7 +85,7 @@ fetch(url).then(async(resp) => {
 
   const result = {
     lastUpdateTimestamp: Date.now(),
-    allStars: root,
+    allStars: transformAllStars(flattened),
     allStarsNameMap: Object.fromEntries(ordNameEntries),
   };
   fs.writeFileSync(EXPORT_NAME, JSON.stringify(result, null, 2));
