@@ -80,7 +80,8 @@ fetch(url).then(async(resp) => {
   const ordNameEntries = $('.monsImg').toArray().map((img) => {
     const data = $(img).data();
     const no = Number($(img).prev().attr('id')) - 1000;
-    return [no, data.tipso];
+    const title = data.tipso && data.tipso.replace('<br>', '\n');
+    return [no, title];
   });
 
   const result = {
