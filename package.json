@@ -16,17 +16,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@vue/component-compiler-utils": "^3.0.0",
+    "@vue/component-compiler-utils": "^3.1.1",
     "cheerio": "^1.0.0-rc.3",
-    "eslint": "^5.16.0",
-    "eslint-plugin-vue": "^5.2.3",
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^6.1.2",
     "node-fetch": "^2.6.0",
     "parcel-bundler": "^1.12.4",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.11"
   },
   "dependencies": {
     "lz-string": "^1.4.4",
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-clipboard2": "^0.3.1",
     "vue-hot-reload-api": "^2.3.4",
     "vue-i18n": "^8.15.0",
