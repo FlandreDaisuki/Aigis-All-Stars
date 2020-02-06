@@ -42,24 +42,36 @@
       <div v-for="firstGroup in allStars" :key="JSON.stringify(firstGroup)">
         <h2>{{ firstGroup[0] }}</h2>
 
-        <ul v-if="typeof(firstGroup[1]) === 'number'" class="star-list">
-          <li v-for="firstGroupId in firstGroup.slice(1)" :key="firstGroupId" class="star-list-item">
-            <StarAvatar :id="firstGroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
+        <ul v-if="Number.isFinite(firstGroup[1])" class="star-list">
+          <li v-for="firstGroupId in firstGroup.slice(1)" :key="JSON.stringify(firstGroupId)" class="star-list-item">
+            <StarAvatar
+              v-if="Number.isFinite(firstGroupId)"
+              :id="firstGroupId"
+              :owned-set="owned"
+              @add-id="addId"
+              @delete-id="deleteId"
+            />
           </li>
         </ul>
 
         <div v-for="secondGroup in firstGroup.slice(1)" v-else :key="JSON.stringify(secondGroup)">
           <h3>{{ secondGroup[0] }}</h3>
-          <ul v-if="typeof(secondGroup[1]) === 'number'" class="star-list">
-            <li v-for="secondGroupId in secondGroup.slice(1)" :key="secondGroupId" class="star-list-item">
-              <StarAvatar :id="secondGroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
+          <ul v-if="Number.isFinite(secondGroup[1])" class="star-list">
+            <li v-for="secondGroupId in secondGroup.slice(1)" :key="JSON.stringify(secondGroupId)" class="star-list-item">
+              <StarAvatar
+                v-if="Number.isFinite(secondGroupId)"
+                :id="secondGroupId"
+                :owned-set="owned"
+                @add-id="addId"
+                @delete-id="deleteId"
+              />
             </li>
           </ul>
 
           <div v-for="thirdGroup in secondGroup.slice(1)" v-else :key="JSON.stringify(thirdGroup)">
             <h4>{{ thirdGroup[0] }}</h4>
             <ul class="star-list">
-              <li v-for="thirdGroupId in thirdGroup.slice(1)" :key="thirdGroupId" class="star-list-item">
+              <li v-for="thirdGroupId in thirdGroup.slice(1)" :key="JSON.stringify(thirdGroupId)" class="star-list-item">
                 <StarAvatar :id="thirdGroupId" :owned-set="owned" @add-id="addId" @delete-id="deleteId" />
               </li>
             </ul>
