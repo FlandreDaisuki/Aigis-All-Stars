@@ -248,7 +248,7 @@ https://flandredaisuki.github.io/Aigis-All-Stars/?s=${this.encodedOwned}
       } else {
         const range = (start, end) => Array.from({ length: Math.abs(start - end) + 1 }, (_, i) => start + i);
         const ids = new URL(this.importURLValue).search
-          .slice(1, -1)
+          .replace('?', '')
           .split(/[,]/g)
           .flatMap((n) => n.includes('-') ? range(...n.split('-').map(Number)) : Number(n))
           .filter(Boolean)
